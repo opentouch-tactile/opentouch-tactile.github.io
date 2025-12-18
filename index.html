@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpenTouch — Research Demo</title>
+  <meta name="description" content="A modern research webpage with demo video, data samples, hardware specs, results, and citations." />
+
+  <style>
+    :root{
+      --bg: #070A12;
+      --panel: rgba(255,255,255,0.06);
+      --panel-2: rgba(255,255,255,0.09);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --faint: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.14);
+      --brand1: #7C3AED;
+      --brand2: #22D3EE;
+      --ok: #34D399;
+      --warn: #FBBF24;
+      --bad: #FB7185;
+      --shadow: 0 18px 55px rgba(0,0,0,0.45);
+      --radius: 18px;
+      --radius2: 24px;
+      --max: 1100px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 15% 5%, rgba(124,58,237,0.35), transparent 55%),
+        radial-gradient(900px 500px at 85% 20%, rgba(34,211,238,0.30), transparent 55%),
+        radial-gradient(700px 400px at 50% 100%, rgba(52,211,153,0.10), transparent 60%),
+        var(--bg);
+      line-height:1.55;
+      overflow-x:hidden;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    a.underline{ text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); }
+
+    /* Top gradient glow */
+    .glow{
+      position: fixed;
+      inset: -20vh -20vw auto -20vw;
+      height: 35vh;
+      pointer-events:none;
+      background: radial-gradient(closest-side, rgba(124,58,237,0.25), transparent 70%);
+      filter: blur(12px);
+      opacity: 0.9;
+      z-index: 0;
+    }
+
+    /* Header */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(7,10,18,0.88), rgba(7,10,18,0.55));
+      border-bottom: 1px solid var(--border);
+    }
+    .nav{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width: 190px;
+    }
+    .logo{
+      width: 34px; height: 34px; border-radius: 12px;
+      background: conic-gradient(from 210deg, var(--brand1), var(--brand2), var(--brand1));
+      box-shadow: 0 8px 25px rgba(124,58,237,0.28);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .brand h1{
+      font-size: 14px;
+      margin:0;
+      letter-spacing: 0.2px;
+      font-weight: 700;
+    }
+    .brand span{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+    .links{
+      display:flex; align-items:center; gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-size: 12px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.22);
+      color: rgba(255,255,255,0.82);
+    }
+    .pill.primary{
+      color: rgba(255,255,255,0.9);
+      border-color: rgba(34,211,238,0.35);
+      background: linear-gradient(135deg, rgba(124,58,237,0.20), rgba(34,211,238,0.16));
+    }
+
+    /* Layout */
+    main{
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+    }
+    .hero{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .brand{ min-width: auto; }
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .pad{ padding: 18px; }
+
+    .title{
+      font-size: 34px;
+      line-height: 1.12;
+      margin: 4px 0 10px;
+      letter-spacing: -0.7px;
+    }
+    .subtitle{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14.5px;
+      max-width: 64ch;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .kpi .box{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 12px;
+      background: rgba(255,255,255,0.04);
+    }
+    .kpi .box b{
+      display:block;
+      font-size: 14px;
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
+    }
+    .kpi .box span{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width: 560px){
+      .kpi{ grid-template-columns: 1fr; }
+      .title{ font-size: 30px; }
+    }
+
+    /* Section headings */
+    section{ margin-top: 18px; }
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between; gap: 10px;
+      margin: 18px 0 10px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+    }
+    .section-head p{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    /* Video */
+    .video-wrap{
+      position: relative;
+      border-radius: 20px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.3);
+    }
+    video{
+      width: 100%;
+      height: auto;
+      display:block;
+      aspect-ratio: 16 / 9;
+      background: rgba(0,0,0,0.25);
+    }
+    .video-badge{
+      position:absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+    .video-controls{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .btn{
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.86);
+      font-size: 13px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* Grid content */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .col-7{ grid-column: span 7; }
+    .col-5{ grid-column: span 5; }
+    .col-6{ grid-column: span 6; }
+    .col-4{ grid-column: span 4; }
+    .col-8{ grid-column: span 8; }
+    .col-12{ grid-column: span 12; }
+    @media (max-width: 920px){
+      .col-7,.col-5,.col-6,.col-4,.col-8{ grid-column: span 12; }
+    }
+
+    .small{
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Data samples */
+    .sample{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.04);
+      overflow:hidden;
+    }
+    .sample .head{
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display:flex; justify-content:space-between; align-items:center; gap: 10px;
+    }
+    .tag{
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.78);
+      white-space:nowrap;
+    }
+    pre{
+      margin:0;
+      padding: 12px 14px 14px;
+      overflow:auto;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,0.86);
+      background: rgba(0,0,0,0.24);
+    }
+    code{ font-family: var(--mono); }
+
+    /* Tables */
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    th, td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      font-size: 13px;
+      color: rgba(255,255,255,0.86);
+      vertical-align: top;
+    }
+    th{
+      text-align:left;
+      color: rgba(255,255,255,0.78);
+      font-weight: 650;
+      background: rgba(255,255,255,0.04);
+    }
+    tr:last-child td{ border-bottom: none; }
+    .muted{ color: var(--muted); }
+
+    /* Results */
+    .metrics{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .metric{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+    }
+    .metric .name{ font-size: 12px; color: var(--muted); }
+    .metric .val{ font-size: 20px; font-weight: 750; margin-top: 2px; letter-spacing: -0.3px; }
+    .metric .delta{ font-size: 12px; margin-top: 4px; color: rgba(255,255,255,0.78); }
+    .delta.ok{ color: var(--ok); }
+    .delta.warn{ color: var(--warn); }
+    .delta.bad{ color: var(--bad); }
+
+    .barlist{
+      margin: 12px 0 0;
+      padding: 0;
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .barrow{
+      display:grid;
+      grid-template-columns: 140px 1fr 60px;
+      gap: 10px;
+      align-items:center;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+    }
+    .barrow .label{ font-size: 13px; color: rgba(255,255,255,0.85); }
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .bar > i{
+      display:block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(124,58,237,0.9), rgba(34,211,238,0.9));
+      box-shadow: 0 10px 30px rgba(34,211,238,0.12);
+      transition: width 800ms ease;
+    }
+    .barrow .num{ font-family: var(--mono); font-size: 12px; color: var(--muted); text-align:right; }
+
+    /* Footer */
+    footer{
+      margin-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .footgrid{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+    }
+    @media (max-width: 920px){
+      .footgrid{ grid-template-columns: 1fr; }
+    }
+    .cite{
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+    }
+    .cite ol{
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+    .cite li{ margin: 6px 0; }
+    .kbd{
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.28);
+      color: rgba(255,255,255,0.78);
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow"></div>
+
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>OpenTouch</h1>
+          <span>Research demo • dataset • hardware • results</span>
+        </div>
+      </div>
+
+      <nav class="links" aria-label="Section navigation">
+        <a class="pill" href="#demo">Demo</a>
+        <a class="pill" href="#data">Data</a>
+        <a class="pill" href="#hardware">Hardware</a>
+        <a class="pill" href="#results">Results</a>
+        <a class="pill primary" href="#cite">Cite & Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="card pad">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span class="tag">New</span>
+              <span class="tag">Realtime</span>
+              <span class="tag">Robust</span>
+            </div>
+            <h2 class="title">OpenTouch: <span style="background:linear-gradient(90deg,var(--brand1),var(--brand2)); -webkit-background-clip:text; background-clip:text; color:transparent;">Touch-aware research</span> with crisp demos</h2>
+            <p class="subtitle">
+              Replace this paragraph with your one-sentence claim + one-sentence method.
+              Example: “OpenTouch learns contact-rich representations from video and proprioception, improving manipulation success under occlusion.”
+            </p>
+          </div>
+        </div>
+
+        <div class="kpi">
+          <div class="box">
+            <b>Key idea</b>
+            <span>Touch-conditioned policy / representation</span>
+          </div>
+          <div class="box">
+            <b>What’s new</b>
+            <span>Better generalization + sample efficiency</span>
+          </div>
+          <div class="box">
+            <b>Outcome</b>
+            <span>↑ success, ↓ errors on hard cases</span>
+          </div>
+        </div>
+
+        <p class="hint">
+          Tip: keep this page simple. Put details in your paper; put the “wow” here.
+        </p>
+      </div>
+
+      <div class="card pad">
+        <div class="section-head" style="margin-top:0;">
+          <h2>At a glance</h2>
+          <p>Quick facts</p>
+        </div>
+        <ul class="small" style="margin:0; padding-left: 18px;">
+          <li><b>Task:</b> <span class="muted">[e.g., tactile manipulation / contact classification]</span></li>
+          <li><b>Inputs:</b> <span class="muted">[e.g., video + tactile + force/torque]</span></li>
+          <li><b>Model:</b> <span class="muted">[e.g., transformer / diffusion / RL policy]</span></li>
+          <li><b>Dataset:</b> <span class="muted">[size, modalities, hours]</span></li>
+          <li><b>Code:</b> <span class="muted"><a class="underline" href="https://github.com/YOURNAME/opentouch" target="_blank" rel="noreferrer">github.com/YOURNAME/opentouch</a></span></li>
+        </ul>
+
+        <div class="section-head">
+          <h2>Resources</h2>
+          <p>Links</p>
+        </div>
+        <div class="video-controls">
+          <a class="btn" href="#" onclick="alert('Replace this with your PDF link'); return false;">📄 Paper (PDF)</a>
+          <a class="btn" href="#" onclick="alert('Replace this with your dataset link'); return false;">🧪 Dataset</a>
+          <a class="btn" href="#" onclick="alert('Replace this with your code link'); return false;">💻 Code</a>
+        </div>
+
+        <p class="hint">Keyboard: press <span class="kbd">K</span> to scroll to Demo, <span class="kbd">R</span> to Results.</p>
+      </div>
+    </div>
+
+    <!-- DEMO -->
+    <section id="demo">
+      <div class="section-head">
+        <h2>Auto-play demo</h2>
+        <p>Muted + inline for reliable autoplay</p>
+      </div>
+
+      <div class="card pad">
+        <div class="video-wrap">
+          <div class="video-badge">▶ Demo</div>
+          <!-- Autoplay policies: must be muted; playsinline helps on iOS -->
+          <video id="demoVideo" autoplay muted loop playsinline preload="metadata" controls>
+            <source src="demo.mp4" type="video/mp4" />
+            <source src="demo.webm" type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="video-controls">
+          <button class="btn" id="toggleMute">🔈 Unmute</button>
+          <button class="btn" id="togglePlay">⏸ Pause</button>
+          <button class="btn" id="restart">⟲ Restart</button>
+          <button class="btn" id="openFullscreen">⛶ Fullscreen</button>
+        </div>
+
+        <p class="hint">
+          If autoplay doesn’t start, the browser is blocking it. Click any button above once.
+        </p>
+      </div>
+    </section>
+
+    <!-- DATA SAMPLES -->
+    <section id="data">
+      <div class="section-head">
+        <h2>Data samples</h2>
+        <p>Show 2–4 crisp examples</p>
+      </div>
+
+      <div class="grid">
+        <div class="sample col-6">
+          <div class="head">
+            <div><b>Sample A</b> <span class="muted">• tactile + video</span></div>
+            <span class="tag">JSON</span>
+          </div>
+          <pre><code>{
+  "episode_id": "ep_000127",
+  "task": "peg_insert",
+  "sensors": {
+    "rgb": "frames/ep_000127/*.jpg",
+    "tactile": "tactile/ep_000127.npy",
+    "ft": "force_torque/ep_000127.csv"
+  },
+  "label": { "success": true, "time_to_insert_s": 3.42 }
+}</code></pre>
+        </div>
+
+        <div class="sample col-6">
+          <div class="head">
+            <div><b>Sample B</b> <span class="muted">• contact event</span></div>
+            <span class="tag">CSV</span>
+          </div>
+          <pre><code>t, fx, fy, fz, tx, ty, tz, contact
+0.000, 0.1, -0.0, 0.2, 0.00, 0.01, 0.00, 0
+0.020, 0.2, -0.1, 0.6, 0.02, 0.03, 0.01, 1
+0.040, 0.4, -0.2, 1.4, 0.05, 0.05, 0.02, 1
+0.060, 0.3, -0.1, 0.9, 0.03, 0.04, 0.01, 1</code></pre>
+        </div>
+
+        <div class="card pad col-12">
+          <div class="section-head" style="margin-top:0;">
+            <h2>Dataset notes</h2>
+            <p>What reviewers look for</p>
+          </div>
+          <ul class="small" style="margin:0; padding-left: 18px;">
+            <li><b>Collection:</b> <span class="muted">[setup, number of sessions, operators, environments]</span></li>
+            <li><b>Modalities:</b> <span class="muted">[RGB, depth, tactile, force/torque, proprioception]</span></li>
+            <li><b>Splits:</b> <span class="muted">[train/val/test protocol + held-out objects/domains]</span></li>
+            <li><b>Licensing:</b> <span class="muted">[e.g., CC-BY 4.0 / custom research license]</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- HARDWARE -->
+    <section id="hardware">
+      <div class="section-head">
+        <h2>Hardware</h2>
+        <p>Reproducibility at a glance</p>
+      </div>
+
+      <div class="grid">
+        <div class="card pad col-7">
+          <table aria-label="Hardware table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Spec</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Robot</b></td>
+                <td class="muted">[e.g., Franka Panda / UR5e]</td>
+                <td class="muted">[control rate, end-effector]</td>
+              </tr>
+              <tr>
+                <td><b>Tactile sensor</b></td>
+                <td class="muted">[e.g., GelSight / DIGIT / custom]</td>
+                <td class="muted">[fps, resolution, mounting]</td>
+              </tr>
+              <tr>
+                <td><b>Compute</b></td>
+                <td class="muted">[GPU / CPU / RAM]</td>
+                <td class="muted">[training time, inference latency]</td>
+              </tr>
+              <tr>
+                <td><b>Cameras</b></td>
+                <td class="muted">[model, resolution, fps]</td>
+                <td class="muted">[calibration method]</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card pad col-5">
+          <div class="section-head" style="margin-top:0;">
+            <h2>Build checklist</h2>
+            <p>Make it easy to replicate</p>
+          </div>
+          <ul class="small" style="margin:0; padding-left: 18px;">
+            <li>Bill of materials + links</li>
+            <li>Mount + calibration steps</li>
+            <li>Sensor sync + timestamping</li>
+            <li>Safety + limits (force/torque)</li>
+            <li>Docker/conda environment</li>
+          </ul>
+
+          <div class="video-controls" style="margin-top: 14px;">
+            <a class="btn" href="#" onclick="alert('Replace with your BOM link'); return false;">🧾 BOM</a>
+            <a class="btn" href="#" onclick="alert('Replace with your calibration guide link'); return false;">🛠 Calibration</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results">
+      <div class="section-head">
+        <h2>Experiment results</h2>
+        <p>Numbers + a small visual</p>
+      </div>
+
+      <div class="grid">
+        <div class="card pad col-6">
+          <div class="section-head" style="margin-top:0;">
+            <h2>Headline metrics</h2>
+            <p>Replace with your real scores</p>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="name">Success rate</div>
+              <div class="val">86.2%</div>
+              <div class="delta ok">+8.4 vs baseline</div>
+            </div>
+            <div class="metric">
+              <div class="name">Time-to-success</div>
+              <div class="val">3.4s</div>
+              <div class="delta warn">-0.6s median</div>
+            </div>
+            <div class="metric">
+              <div class="name">Failure rate (hard)</div>
+              <div class="val">9.1%</div>
+              <div class="delta ok">-4.7 abs</div>
+            </div>
+          </div>
+
+          <p class="hint">Keep metrics consistent with your paper’s table (same splits, same units).</p>
+        </div>
+
+        <div class="card pad col-6">
+          <div class="section-head" style="margin-top:0;">
+            <h2>Benchmark comparison</h2>
+            <p>Animated bars</p>
+          </div>
+
+          <ul class="barlist" id="barlist">
+            <li class="barrow" data-val="0.862">
+              <div class="label">OpenTouch</div>
+              <div class="bar"><i></i></div>
+              <div class="num">0.862</div>
+            </li>
+            <li class="barrow" data-val="0.778">
+              <div class="label">Baseline A</div>
+              <div class="bar"><i></i></div>
+              <div class="num">0.778</div>
+            </li>
+            <li class="barrow" data-val="0.742">
+              <div class="label">Baseline B</div>
+              <div class="bar"><i></i></div>
+              <div class="num">0.742</div>
+            </li>
+            <li class="barrow" data-val="0.615">
+              <div class="label">No tactile</div>
+              <div class="bar"><i></i></div>
+              <div class="num">0.615</div>
+            </li>
+          </ul>
+
+          <p class="hint">Swap these for your actual results. The bars will auto-scale to the max.</p>
+        </div>
+
+        <div class="card pad col-12">
+          <div class="section-head" style="margin-top:0;">
+            <h2>Ablations & notes</h2>
+            <p>2–5 bullet insights</p>
+          </div>
+          <ul class="small" style="margin:0; padding-left: 18px;">
+            <li><b>Ablation:</b> <span class="muted">Removing tactile token reduces success by X% on occluded objects.</span></li>
+            <li><b>Generalization:</b> <span class="muted">Held-out materials show stable performance with minimal tuning.</span></li>
+            <li><b>Failure modes:</b> <span class="muted">Most failures occur under [condition]; see Demo for examples.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CITATION + CONTACT -->
+    <section id="cite">
+      <div class="section-head">
+        <h2>Citation & contact</h2>
+        <p>Make it easy to cite you</p>
+      </div>
+
+      <div class="grid">
+        <div class="cite col-8">
+          <b>How to cite</b>
+          <p class="small" style="margin-top:6px;">
+            Replace the BibTeX below with your real citation.
+          </p>
+          <pre><code>@inproceedings{opentouch2026,
+  title     = {OpenTouch: Touch-aware Research with Crisp Demos},
+  author    = {Your Name and Collaborators},
+  booktitle = {Conference Name},
+  year      = {2026},
+  url       = {https://YOURNAME.github.io/opentouch/}
+}</code></pre>
+
+          <b>References</b>
+          <ol class="small">
+            <li>Author et al. “Related Work A.” <span class="muted">Venue, Year.</span></li>
+            <li>Author et al. “Related Work B.” <span class="muted">Venue, Year.</span></li>
+          </ol>
+        </div>
+
+        <div class="cite col-4">
+          <b>Contact</b>
+          <p class="small" style="margin-top:8px;">
+            <b>Your Name</b><br/>
+            Lab / University / Company<br/>
+            Email: <a class="underline" href="mailto:you@example.com">you@example.com</a><br/>
+            GitHub: <a class="underline" href="https://github.com/YOURNAME" target="_blank" rel="noreferrer">@YOURNAME</a>
+          </p>
+
+          <b>Media kit</b>
+          <p class="small" style="margin-top:6px;">
+            Add: teaser image, logo, short video, and a 2–3 sentence summary.
+          </p>
+        </div>
+      </div>
+
+      <footer>
+        <div class="footgrid">
+          <div>
+            <b style="color: rgba(255,255,255,0.84);">OpenTouch</b>
+            <div class="small" style="margin-top:6px;">
+              Built as a single static page. Host it on GitHub Pages.
+            </div>
+          </div>
+          <div class="small" style="text-align:right;">
+            <span class="muted">Last updated:</span> <span id="lastUpdated"></span>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    // Smooth anchor scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (!id || id === "#") return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        history.pushState(null, "", id);
+      });
+    });
+
+    // Video controls (autoplay is already set; these help users unlock audio)
+    const v = document.getElementById('demoVideo');
+    const toggleMute = document.getElementById('toggleMute');
+    const togglePlay = document.getElementById('togglePlay');
+    const restart = document.getElementById('restart');
+    const openFullscreen = document.getElementById('openFullscreen');
+
+    function syncButtons(){
+      toggleMute.textContent = v.muted ? "🔈 Unmute" : "🔇 Mute";
+      togglePlay.textContent = v.paused ? "▶ Play" : "⏸ Pause";
+    }
+
+    toggleMute.addEventListener('click', async () => {
+      v.muted = !v.muted;
+      // If user unmutes, try to play (some browsers pause when toggling audio)
+      try { await v.play(); } catch {}
+      syncButtons();
+    });
+
+    togglePlay.addEventListener('click', async () => {
+      try {
+        if (v.paused) await v.play();
+        else v.pause();
+      } catch {}
+      syncButtons();
+    });
+
+    restart.addEventListener('click', async () => {
+      v.currentTime = 0;
+      try { await v.play(); } catch {}
+      syncButtons();
+    });
+
+    openFullscreen.addEventListener('click', async () => {
+      const el = v;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    });
+
+    v.addEventListener('play', syncButtons);
+    v.addEventListener('pause', syncButtons);
+    syncButtons();
+
+    // Animated bars scaled to max value
+    function animateBars(){
+      const rows = [...document.querySelectorAll('#barlist .barrow')];
+      const vals = rows.map(r => parseFloat(r.dataset.val || "0"));
+      const max = Math.max(...vals, 1e-6);
+      rows.forEach((r, idx) => {
+        const val = vals[idx];
+        const pct = Math.max(0, Math.min(1, val / max)) * 100;
+        const fill = r.querySelector('.bar > i');
+        // slight stagger
+        setTimeout(() => { fill.style.width = pct.toFixed(1) + "%"; }, 120 + idx * 80);
+      });
+    }
+    // Run once when visible
+    const results = document.getElementById('results');
+    const obs = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        animateBars();
+        obs.disconnect();
+      }
+    }, { threshold: 0.25 });
+    obs.observe(results);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      if (e.key.toLowerCase() === "k") document.getElementById('demo').scrollIntoView({behavior:"smooth"});
+      if (e.key.toLowerCase() === "r") document.getElementById('results').scrollIntoView({behavior:"smooth"});
+    });
+
+    // Last updated
+    const d = new Date();
+    document.getElementById('lastUpdated').textContent =
+      d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+  </script>
+</body>
+</html>
