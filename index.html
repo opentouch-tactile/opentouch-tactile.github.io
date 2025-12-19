@@ -2,913 +2,958 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OpenTouch — Research Demo</title>
-  <meta name="description" content="A modern research webpage with demo video, data samples, hardware specs, results, and citations." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OpenTouch — Project Page</title>
+  <meta name="description" content="OpenTouch dataset: synchronized egocentric video, full-hand tactile, and pose. Demos, protocol, analysis, and benchmarks." />
+
+  <!-- Model Viewer (interactive 3D) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 
   <style>
     :root{
-      --bg: #070A12;
-      --panel: rgba(255,255,255,0.06);
-      --panel-2: rgba(255,255,255,0.09);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.65);
-      --faint: rgba(255,255,255,0.45);
-      --border: rgba(255,255,255,0.14);
-      --brand1: #7C3AED;
-      --brand2: #22D3EE;
-      --ok: #34D399;
-      --warn: #FBBF24;
-      --bad: #FB7185;
-      --shadow: 0 18px 55px rgba(0,0,0,0.45);
-      --radius: 18px;
-      --radius2: 24px;
-      --max: 1100px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --bg0:#070A12;
+      --bg1:#0A1020;
+      --line:rgba(255,255,255,.12);
+      --line2:rgba(255,255,255,.08);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --faint:rgba(255,255,255,.50);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r2:24px;
+      --max:1180px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --a1:#7C3AED;
+      --a2:#22D3EE;
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family: var(--sans);
-      color: var(--text);
+      font-family:var(--sans);
+      color:var(--text);
       background:
-        radial-gradient(900px 500px at 15% 5%, rgba(124,58,237,0.35), transparent 55%),
-        radial-gradient(900px 500px at 85% 20%, rgba(34,211,238,0.30), transparent 55%),
-        radial-gradient(700px 400px at 50% 100%, rgba(52,211,153,0.10), transparent 60%),
-        var(--bg);
-      line-height:1.55;
+        radial-gradient(1200px 650px at 20% -10%, rgba(124,58,237,.24), transparent 58%),
+        radial-gradient(1100px 600px at 85% 5%, rgba(34,211,238,.20), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
     }
-
-    a{ color: inherit; text-decoration: none; }
-    a.underline{ text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); }
-
-    /* Top gradient glow */
+    a{color:inherit}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 18px}
     .glow{
-      position: fixed;
-      inset: -20vh -20vw auto -20vw;
-      height: 35vh;
-      pointer-events:none;
-      background: radial-gradient(closest-side, rgba(124,58,237,0.25), transparent 70%);
-      filter: blur(12px);
-      opacity: 0.9;
-      z-index: 0;
+      position:fixed; inset:-20vh -10vw auto -10vw;
+      height:35vh; pointer-events:none; z-index:0;
+      background: radial-gradient(closest-side, rgba(124,58,237,.18), transparent 70%);
+      filter: blur(14px);
+      opacity:.9;
     }
 
     /* Header */
     header{
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      position:sticky; top:0; z-index:30;
       backdrop-filter: blur(14px);
-      background: linear-gradient(to bottom, rgba(7,10,18,0.88), rgba(7,10,18,0.55));
-      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(7,10,18,.86), rgba(7,10,18,.55));
+      border-bottom:1px solid var(--line2);
     }
     .nav{
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 14px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; padding:12px 0;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width: 190px;
-    }
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; min-width:220px;}
     .logo{
-      width: 34px; height: 34px; border-radius: 12px;
-      background: conic-gradient(from 210deg, var(--brand1), var(--brand2), var(--brand1));
-      box-shadow: 0 8px 25px rgba(124,58,237,0.28);
-      border: 1px solid rgba(255,255,255,0.22);
+      width:34px;height:34px;border-radius:12px;
+      background: conic-gradient(from 210deg, var(--a1), var(--a2), var(--a1));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 30px rgba(124,58,237,.20);
     }
-    .brand h1{
-      font-size: 14px;
-      margin:0;
-      letter-spacing: 0.2px;
-      font-weight: 700;
-    }
-    .brand span{
-      display:block;
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 500;
-      margin-top: 1px;
-    }
-    .links{
-      display:flex; align-items:center; gap: 10px;
-      flex-wrap: wrap;
-      justify-content:flex-end;
-    }
+    .brand b{display:block;font-size:18px;letter-spacing:.2px}
+    .brand span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    .links{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .pill{
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      color: var(--muted);
-      font-size: 12px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      font-size:12px; color:var(--muted); text-decoration:none;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid transparent;
+      background: rgba(255,255,255,.03);
+      transition: transform .12s ease, border-color .12s ease, color .12s ease;
       user-select:none;
       white-space:nowrap;
     }
-    .pill:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.22);
-      color: rgba(255,255,255,0.82);
-    }
+    .pill:hover{transform:translateY(-1px); color:var(--text); border-color:var(--line)}
     .pill.primary{
-      color: rgba(255,255,255,0.9);
-      border-color: rgba(34,211,238,0.35);
-      background: linear-gradient(135deg, rgba(124,58,237,0.20), rgba(34,211,238,0.16));
+      color:rgba(255,255,255,.88);
+      border-color: rgba(34,211,238,.32);
+      background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(34,211,238,.12));
     }
 
-    /* Layout */
-    main{
-      position: relative;
-      z-index: 1;
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 28px 18px 64px;
+    main{position:relative; z-index:1}
+    section{padding:24px 0}
+    .hero{padding:30px 0 16px}
+
+    .title{
+      font-size: clamp(24px, 3.2vw, 44px);
+      line-height:1.08;
+      letter-spacing:-.8px;
+      margin: 6px 0 10px;
     }
-    .hero{
-      margin-top: 14px;
-      display:grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
-      align-items: stretch;
+    .authors{
+      color:var(--muted);
+      font-size: 16px;
+      line-height:1.45;
+      margin: 0 0 10px;
+      max-width: 95ch;
     }
-    @media (max-width: 920px){
-      .hero{ grid-template-columns: 1fr; }
-      .brand{ min-width: auto; }
+    .affil{
+      color:var(--faint);
+      font-size: 18px;
+      margin: 0 0 16px;
+      max-width: 95ch;
     }
+    .cta{display:flex; gap:10px; flex-wrap:wrap; margin: 14px 0 6px;}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      text-decoration:none;
+      color:rgba(255,255,255,.86);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px); border-color: rgba(34,211,238,.40); background: rgba(255,255,255,.06)}
+    .btn.primary{
+      border-color: transparent;
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.90));
+      color:#06101a;
+      font-weight: 750;
+    }
+
+    .secHead{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:12px; margin: 6px 0 12px;
+    }
+    .secHead h2{margin:0;font-size: 24px;letter-spacing:-.2px;}
+    .secHead p{margin:0; color:var(--muted); font-size: 12.5px}
 
     .card{
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
-      border-radius: var(--radius2);
+      border:1px solid var(--line2);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.035));
+      border-radius: var(--r2);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .pad{ padding: 18px; }
+    .pad{padding:16px}
 
-    .title{
-      font-size: 34px;
-      line-height: 1.12;
-      margin: 4px 0 10px;
-      letter-spacing: -0.7px;
-    }
-    .subtitle{
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 14.5px;
-      max-width: 64ch;
-    }
-    .kpi{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .kpi .box{
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px 12px;
-      background: rgba(255,255,255,0.04);
-    }
-    .kpi .box b{
-      display:block;
-      font-size: 14px;
-      margin-bottom: 3px;
-      letter-spacing: -0.2px;
-    }
-    .kpi .box span{
-      font-size: 12px;
-      color: var(--muted);
-    }
-    @media (max-width: 560px){
-      .kpi{ grid-template-columns: 1fr; }
-      .title{ font-size: 30px; }
-    }
-
-    /* Section headings */
-    section{ margin-top: 18px; }
-    .section-head{
-      display:flex; align-items:flex-end; justify-content:space-between; gap: 10px;
-      margin: 18px 0 10px;
-    }
-    .section-head h2{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: -0.2px;
-    }
-    .section-head p{
-      margin:0;
-      color: var(--muted);
-      font-size: 12.5px;
-    }
-
-    /* Video */
-    .video-wrap{
-      position: relative;
+    .frame{
       border-radius: 20px;
+      border:1px solid rgba(255,255,255,.14);
       overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,.25);
     }
-    video{
-      width: 100%;
-      height: auto;
-      display:block;
-      aspect-ratio: 16 / 9;
-      background: rgba(0,0,0,0.25);
-    }
-    .video-badge{
-      position:absolute;
-      top: 12px;
-      left: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.88);
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
-    }
-    .video-controls{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-    .btn{
-      cursor: pointer;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.86);
-      font-size: 13px;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      user-select:none;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.22);
-    }
-    .hint{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
-    /* Grid content */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 12px;
-    }
-    .col-7{ grid-column: span 7; }
-    .col-5{ grid-column: span 5; }
-    .col-6{ grid-column: span 6; }
-    .col-4{ grid-column: span 4; }
-    .col-8{ grid-column: span 8; }
-    .col-12{ grid-column: span 12; }
-    @media (max-width: 920px){
-      .col-7,.col-5,.col-6,.col-4,.col-8{ grid-column: span 12; }
-    }
-
-    .small{
+    .cap{
+      padding:10px 12px;
+      border-top:1px solid var(--line2);
+      color:var(--muted);
       font-size: 12.5px;
-      color: var(--muted);
-      margin: 0;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      background: rgba(255,255,255,.02);
     }
 
-    /* Data samples */
-    .sample{
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.04);
-      overflow:hidden;
+    /* Single-media blocks: full width, keep original aspect */
+    .frame.auto img,
+    .frame.auto video{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit: contain;
+      object-position:center;
+      background: rgba(0,0,0,.25);
     }
-    .sample .head{
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      display:flex; justify-content:space-between; align-items:center; gap: 10px;
+
+    /* Examples: side-by-side => same height, keep aspect (letterbox ok) */
+    .rows{display:flex;flex-direction:column;gap:12px}
+    .row{
+      display:grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap:12px;
+      align-items: stretch;
     }
-    .tag{
-      font-size: 11px;
-      padding: 4px 8px;
+    .row .frame{height: clamp(220px, 26vw, 340px)}
+    #examples .row .frame img,
+    #examples .row .frame video{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      background: rgba(0,0,0,.25);
+    }
+    @media (max-width: 980px){
+      .row{grid-template-columns: 1fr}
+      .row .frame{height:auto;}
+      #examples .row .frame img,
+      #examples .row .frame video{height:auto;}
+    }
+
+    /* ===== PROTOCOL: left square viewer, right rectangle matching PNG aspect, same height ===== */
+    .protoRow{
+      --gap: 12px;
+      --protoH: 360px;       /* JS sets */
+      --pipeAspect: 2.0;     /* JS sets = imgW/imgH */
+      display:flex;
+      gap: var(--gap);
+      align-items: stretch;
+      width:100%;
+    }
+
+    /* Each side is a "frame" but we split into media + cap so cap doesn't steal height */
+    .protoViewer{
+      flex: 0 0 var(--protoH);
+      height: var(--protoH);
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .protoPipe{
+      flex: 1 1 auto;           /* take remaining width */
+      height: var(--protoH);
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    /* Media areas: these are what must match height */
+    .protoMedia{
+      flex: 1 1 auto;
+      min-height:0;
+      width:100%;
+      display:block;
+    }
+
+    /* Viewer fills its media area */
+    .protoViewer .protoMedia model-viewer{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    /* Pipeline media area keeps the PNG aspect */
+    .protoPipe .protoMedia{
+      aspect-ratio: var(--pipeAspect);
+      height: 100%;
+    }
+
+    /* Image fits without distortion */
+    .protoPipe .protoMedia img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      background: rgba(0,0,0,.25);
+    }
+
+    /* model-viewer styling */
+    model-viewer{
+      background: radial-gradient(600px 400px at 50% 20%, rgba(34,211,238,.10), transparent 60%),
+                  rgba(0,0,0,.18);
+    }
+    .mvWrap{position:relative}
+    .mvCap{
+      position:absolute; left:12px; top:12px;
+      padding:6px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.78);
-      white-space:nowrap;
-    }
-    pre{
-      margin:0;
-      padding: 12px 14px 14px;
-      overflow:auto;
-      font-family: var(--mono);
       font-size: 12px;
-      color: rgba(255,255,255,0.86);
-      background: rgba(0,0,0,0.24);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.35);
+      color: rgba(255,255,255,.88);
+      backdrop-filter: blur(10px);
+      z-index:2;
     }
-    code{ font-family: var(--mono); }
 
-    /* Tables */
+    /* Mobile: stack; viewer stays square; pipeline keeps aspect */
+    @media (max-width: 980px){
+      .protoRow{flex-direction:column;}
+      .protoViewer, .protoPipe{height:auto; flex: initial; width:100%;}
+      .protoViewer .protoMedia{aspect-ratio: 1 / 1;}
+      .protoPipe .protoMedia{height:auto; aspect-ratio: var(--pipeAspect);}
+    }
+
+    .mini{color:var(--muted); font-size: 12.5px; margin: 10px 0 0}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(34,211,238,.26);
+      background: rgba(34,211,238,.06);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .findings{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    /* 2x2 images for grasp taxonomy examples (if you later add them) */
+    .grid2x2{display:grid;grid-template-columns: 1fr 1fr;gap:12px;}
+    @media (max-width:980px){ .grid2x2{grid-template-columns:1fr;} }
+    .grid2x2 .frame{aspect-ratio: 1/1;}
+    .grid2x2 .frame img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      background: rgba(0,0,0,.25);
+    }
+
+    /* Bench layout: left column (videos stacked), right column (tables) */
+    .benchGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width:980px){ .benchGrid{grid-template-columns:1fr;} }
+    .benchLeft{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .benchLeft .frame{
+      height: clamp(220px, 22vw, 320px);
+    }
+    .benchLeft video{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      background: rgba(0,0,0,.25);
+    }
+
     table{
       width:100%;
       border-collapse: collapse;
+      border:1px solid var(--line2);
+      background: rgba(255,255,255,.02);
+      border-radius: 18px;
       overflow:hidden;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
     }
     th, td{
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      font-size: 13px;
-      color: rgba(255,255,255,0.86);
-      vertical-align: top;
-    }
-    th{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line2);
       text-align:left;
-      color: rgba(255,255,255,0.78);
-      font-weight: 650;
-      background: rgba(255,255,255,0.04);
+      font-size: 18px;
+      vertical-align: top;
+      color: rgba(255,255,255,.86);
     }
-    tr:last-child td{ border-bottom: none; }
-    .muted{ color: var(--muted); }
+    th{color:var(--muted); font-weight: 700; background: rgba(255,255,255,.03)}
+    tr:last-child td{border-bottom:none}
 
-    /* Results */
-    .metrics{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 10px;
-      margin-top: 10px;
+    pre{
+      margin:0;
+      padding:14px;
+      border-radius: 18px;
+      border:1px solid var(--line2);
+      background: rgba(0,0,0,.22);
+      overflow:auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: rgba(255,255,255,.88);
+      line-height:1.4;
     }
-    .metric{
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      background: rgba(255,255,255,0.04);
+    .rowEnd{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin-top: 12px;
     }
-    .metric .name{ font-size: 12px; color: var(--muted); }
-    .metric .val{ font-size: 20px; font-weight: 750; margin-top: 2px; letter-spacing: -0.3px; }
-    .metric .delta{ font-size: 12px; margin-top: 4px; color: rgba(255,255,255,0.78); }
-    .delta.ok{ color: var(--ok); }
-    .delta.warn{ color: var(--warn); }
-    .delta.bad{ color: var(--bad); }
-
-    .barlist{
-      margin: 12px 0 0;
-      padding: 0;
-      list-style:none;
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
+    .copy{
+      cursor:pointer;
+      padding:9px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.86);
+      user-select:none;
     }
-    .barrow{
-      display:grid;
-      grid-template-columns: 140px 1fr 60px;
-      gap: 10px;
-      align-items:center;
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.03);
-    }
-    .barrow .label{ font-size: 13px; color: rgba(255,255,255,0.85); }
-    .bar{
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.10);
-    }
-    .bar > i{
-      display:block;
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(124,58,237,0.9), rgba(34,211,238,0.9));
-      box-shadow: 0 10px 30px rgba(34,211,238,0.12);
-      transition: width 800ms ease;
-    }
-    .barrow .num{ font-family: var(--mono); font-size: 12px; color: var(--muted); text-align:right; }
-
-    /* Footer */
+    .copy:hover{border-color: rgba(34,211,238,.40)}
     footer{
-      margin-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding-top: 16px;
+      padding: 26px 0 40px;
+      border-top:1px solid var(--line2);
       color: var(--muted);
       font-size: 12.5px;
+      margin-top: 16px;
     }
-    .footgrid{
-      display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 12px;
+
+    .likeBox{display:flex; gap:10px; flex-wrap:wrap; align-items:center;justify-content:space-between;}
+    .likeBtn{
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.16);
+      background: linear-gradient(135deg, rgba(124,58,237,.16), rgba(34,211,238,.10));
+      color: rgba(255,255,255,.90);
+      user-select:none;
     }
-    @media (max-width: 920px){
-      .footgrid{ grid-template-columns: 1fr; }
-    }
-    .cite{
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.03);
-      padding: 12px;
-    }
-    .cite ol{
-      margin: 8px 0 0;
-      padding-left: 18px;
-    }
-    .cite li{ margin: 6px 0; }
-    .kbd{
+    .likeBtn:hover{border-color: rgba(34,211,238,.45)}
+    .likeCount{
       font-family: var(--mono);
-      padding: 2px 6px;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 8px;
-      background: rgba(0,0,0,0.28);
-      color: rgba(255,255,255,0.78);
-      font-size: 11px;
+      color: rgba(255,255,255,.85);
+      padding: 2px 8px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
     }
   </style>
 </head>
 
 <body>
-  <div class="glow"></div>
+<div class="glow"></div>
 
-  <header>
+<header>
+  <div class="wrap">
     <div class="nav">
-      <div class="brand">
+      <a class="brand" href="#top">
         <div class="logo" aria-hidden="true"></div>
         <div>
-          <h1>OpenTouch</h1>
-          <span>Research demo • dataset • hardware • results</span>
+          <b>OpenTouch</b>
+          <span>Dataset • Protocol • Analysis • Benchmarks</span>
         </div>
-      </div>
-
+      </a>
       <nav class="links" aria-label="Section navigation">
-        <a class="pill" href="#demo">Demo</a>
-        <a class="pill" href="#data">Data</a>
-        <a class="pill" href="#hardware">Hardware</a>
-        <a class="pill" href="#results">Results</a>
-        <a class="pill primary" href="#cite">Cite & Contact</a>
+        <a class="pill" href="#teaser">Teaser</a>
+        <a class="pill" href="#examples">Examples</a>
+        <a class="pill" href="#protocol">Protocol</a>
+        <a class="pill" href="#analysis_tax">Analysis</a>
+        <a class="pill" href="#ego4d">Ego4D</a>
+        <a class="pill primary" href="#bench">Benchmarks</a>
+        <a class="pill" href="#cite">Citation</a>
+        <a class="pill" href="#contact">Contact</a>
       </nav>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <!-- HERO -->
-    <div class="hero">
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
       <div class="card pad">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-          <div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <span class="tag">New</span>
-              <span class="tag">Realtime</span>
-              <span class="tag">Robust</span>
-            </div>
-            <h2 class="title">OpenTouch: <span style="background:linear-gradient(90deg,var(--brand1),var(--brand2)); -webkit-background-clip:text; background-clip:text; color:transparent;">Touch-aware research</span> with crisp demos</h2>
-            <p class="subtitle">
-              Replace this paragraph with your one-sentence claim + one-sentence method.
-              Example: “OpenTouch learns contact-rich representations from video and proprioception, improving manipulation success under occlusion.”
-            </p>
-          </div>
-        </div>
+        <div class="title">OpenTouch: Bringing Full-Hand Touch to Real-World Interaction</div>
 
-        <div class="kpi">
-          <div class="box">
-            <b>Key idea</b>
-            <span>Touch-conditioned policy / representation</span>
-          </div>
-          <div class="box">
-            <b>What’s new</b>
-            <span>Better generalization + sample efficiency</span>
-          </div>
-          <div class="box">
-            <b>Outcome</b>
-            <span>↑ success, ↓ errors on hard cases</span>
-          </div>
-        </div>
-
-        <p class="hint">
-          Tip: keep this page simple. Put details in your paper; put the “wow” here.
+        <p class="authors">
+          <b>Yuxin Ray Song</b><sup>1,*</sup>&nbsp;&nbsp;
+          <b>Jinzhou Li</b><sup>2,*</sup>&nbsp;&nbsp;
+          <b>Rao Fu</b><sup>3,*</sup>&nbsp;&nbsp;
+          <b>Devin Murphy</b><sup>4</sup>&nbsp;&nbsp;
+          <b>Kaichen Zhou</b><sup>1,5</sup><br/>
+          <b>Rishi Shiv</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Yaqi Li</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Haoyu Xiong</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Crystal E. Owens</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Yilun Du</b><sup>5</sup><br/>
+          <b>Yiyue Luo</b><sup>4</sup>&nbsp;&nbsp;
+          <b>Xianyi Cheng</b><sup>2</sup>&nbsp;&nbsp;
+          <b>Antonio Torralba</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Wojciech Matusik</b><sup>1</sup>&nbsp;&nbsp;
+          <b>Paul Pu Liang</b><sup>1</sup>
         </p>
-      </div>
 
-      <div class="card pad">
-        <div class="section-head" style="margin-top:0;">
-          <h2>At a glance</h2>
-          <p>Quick facts</p>
-        </div>
-        <ul class="small" style="margin:0; padding-left: 18px;">
-          <li><b>Task:</b> <span class="muted">[e.g., tactile manipulation / contact classification]</span></li>
-          <li><b>Inputs:</b> <span class="muted">[e.g., video + tactile + force/torque]</span></li>
-          <li><b>Model:</b> <span class="muted">[e.g., transformer / diffusion / RL policy]</span></li>
-          <li><b>Dataset:</b> <span class="muted">[size, modalities, hours]</span></li>
-          <li><b>Code:</b> <span class="muted"><a class="underline" href="https://github.com/YOURNAME/opentouch" target="_blank" rel="noreferrer">github.com/YOURNAME/opentouch</a></span></li>
-        </ul>
+        <p class="affil">
+          <sup>1</sup>MIT&nbsp;&nbsp;&nbsp;
+          <sup>2</sup>Duke University&nbsp;&nbsp;&nbsp;
+          <sup>3</sup>Brown University&nbsp;&nbsp;&nbsp;
+          <sup>4</sup>University of Washington&nbsp;&nbsp;&nbsp;
+          <sup>5</sup>Harvard University
+          <br/>
+          <span style="color:var(--muted); font-size:12.5px;"><sup>*</sup>Equal contribution</span>
+        </p>
 
-        <div class="section-head">
-          <h2>Resources</h2>
-          <p>Links</p>
+        <div class="cta">
+            <a class="btn primary" href="#teaser">▶ Watch Teaser</a>
+            <a class="btn" href="https://arxiv.org/abs/2512.16842" target="_blank" rel="noopener">📄 Paper</a>
+            <a class="btn" href="https://github.com/opentouch-tactile/opentouch" target="_blank" rel="noopener">💻 Code</a>
+            <a class="btn" href="https://opentouch.world/" target="_blank" rel="noopener">🧩 Dataset</a>
         </div>
-        <div class="video-controls">
-          <a class="btn" href="#" onclick="alert('Replace this with your PDF link'); return false;">📄 Paper (PDF)</a>
-          <a class="btn" href="#" onclick="alert('Replace this with your dataset link'); return false;">🧪 Dataset</a>
-          <a class="btn" href="#" onclick="alert('Replace this with your code link'); return false;">💻 Code</a>
-        </div>
-
-        <p class="hint">Keyboard: press <span class="kbd">K</span> to scroll to Demo, <span class="kbd">R</span> to Results.</p>
       </div>
     </div>
+  </section>
 
-    <!-- DEMO -->
-    <section id="demo">
-      <div class="section-head">
-        <h2>Auto-play demo</h2>
-        <p>Muted + inline for reliable autoplay</p>
+  <!-- TEASER -->
+  <section id="teaser">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>OpenTouch: Egocentric Video • Full-hand Tactile • Hand Poses</h2>
+        <p></p>
       </div>
 
       <div class="card pad">
-        <div class="video-wrap">
-          <div class="video-badge">▶ Demo</div>
-          <!-- Autoplay policies: must be muted; playsinline helps on iOS -->
-          <video id="demoVideo" autoplay muted loop playsinline preload="metadata" controls>
-            <source src="demo.mp4" type="video/mp4" />
-            <source src="demo.webm" type="video/webm" />
-            Your browser does not support the video tag.
+        <div class="frame auto">
+          <video autoplay muted loop playsinline preload="auto" controls poster="assets/posters/teaser.jpg">
+            <source src="assets/videos/teaser.mp4" type="video/mp4" />
           </video>
         </div>
 
-        <div class="video-controls">
-          <button class="btn" id="toggleMute">🔈 Unmute</button>
-          <button class="btn" id="togglePlay">⏸ Pause</button>
-          <button class="btn" id="restart">⟲ Restart</button>
-          <button class="btn" id="openFullscreen">⛶ Fullscreen</button>
+        <div class="pad" style="padding-top:12px;">
+          <p style="margin:0; color:var(--muted); font-size:18px; line-height:1.65;">
+            OPENTOUCH is the first in-the-wild, full-hand tactile dataset with synchronized egocentric video,
+            force-aware full-hand touch, and hand-pose trajectories. It contains 5 hours of recordings, including
+            3 hours of densely annotated, contact-rich interactions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMPLES -->
+  <section id="examples">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Example Vision-Touch-Pose Data</h2>
+        <p></p>
+      </div>
+
+      <p class="mini" style="font-size:18px; line-height:1.7;">
+        OPENTOUCH demonstrates that hardware-based tactile sensing and pose tracking reveal critical force,
+        contact, and motion cues that vision alone cannot capture.
+      </p>
+
+      <div class="card pad">
+        <div class="rows">
+          <div class="row">
+            <div class="frame">
+              <img src="assets/examples/ex1.png" alt="Example 1 figure" />
+              <div class="cap"><span>Example 1 — figure</span><span>assets/examples/ex1.png</span></div>
+            </div>
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/examples/ex1_poster.jpg">
+                <source src="assets/examples/ex1.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>Example 1 — video</span><span>assets/examples/ex1.mp4</span></div>
+            </div>
+          </div>
+          <p class="mini" style="font-size:18px; line-height:1.7;">
+            (a) Although the first three frames show nearly identical hand poses, the tactile signals reveal that in the third frame the hand applies sufficient force to move the chair.
+          </p>
+
+          <div class="row">
+            <div class="frame">
+              <img src="assets/examples/ex2.png" alt="Example 2 figure" />
+              <div class="cap"><span>Example 2 — figure</span><span>assets/examples/ex2.png</span></div>
+            </div>
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/examples/ex2_poster.jpg">
+                <source src="assets/examples/ex2.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>Example 2 — video</span><span>assets/examples/ex2.mp4</span></div>
+            </div>
+          </div>
+          <p class="mini" style="font-size:18px; line-height:1.7;">
+            (b) In the first frame, tactile readings clearly indicate contact with the table, ambiguous from RGB alone. In the next
+            two frames, the hand moves out of view, making vision-based pose estimation unreliable; OPENTOUCH provides accurate
+            hardware-tracked poses throughout.
+          </p>
+
+          <div class="row">
+            <div class="frame">
+              <img src="assets/examples/ex3.png" alt="Example 3 figure" />
+              <div class="cap"><span>Example 3 — figure</span><span>assets/examples/ex3.png</span></div>
+            </div>
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/examples/ex3_poster.jpg">
+                <source src="assets/examples/ex3.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>Example 3 — video</span><span>assets/examples/ex3.mp4</span></div>
+            </div>
+          </div>
+          <p class="mini" style="font-size:18px; line-height:1.7;">
+            (c) Tactile sensing exposes clear interaction patterns with transparent object that remain difficult to infer from visual tracking alone.
+          </p>
+
+          <div class="row">
+            <div class="frame">
+              <img src="assets/examples/ex4.png" alt="Example 4 figure" />
+              <div class="cap"><span>Example 4 — figure</span><span>assets/examples/ex4.png</span></div>
+            </div>
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/examples/ex4_poster.jpg">
+                <source src="assets/examples/ex4.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>Example 4 — video</span><span>assets/examples/ex4.mp4</span></div>
+            </div>
+          </div>
         </div>
 
-        <p class="hint">
-          If autoplay doesn’t start, the browser is blocking it. Click any button above once.
+        <p class="mini" style="font-size:18px; line-height:1.7;">
+          (d) The tactile map captures a subtle middle-finger double-click on a button, a fine-grained motion that even pose tracking may miss.
+          See the supplementary video for the high-fidelity tactile signals and subtle dynamic patterns.
         </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- DATA SAMPLES -->
-    <section id="data">
-      <div class="section-head">
-        <h2>Data samples</h2>
-        <p>Show 2–4 crisp examples</p>
+  <!-- PROTOCOL -->
+  <section id="protocol">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Hardware + Annotation Setup</h2>
       </div>
+      <p class="mini" style="font-size:18px; line-height:1.7;">
+        Meta Aria glasses, Rokoko Smartgloves, and the FPC-based tactile sensor are synchronized at 30 Hz with an average 2 ms latency.
+        High-level descriptions and detailed annotations are automatically generated from the egocentric video and the rendered tactile maps using a large language model.
+      </p>
 
-      <div class="grid">
-        <div class="sample col-6">
-          <div class="head">
-            <div><b>Sample A</b> <span class="muted">• tactile + video</span></div>
-            <span class="tag">JSON</span>
-          </div>
-          <pre><code>{
-  "episode_id": "ep_000127",
-  "task": "peg_insert",
-  "sensors": {
-    "rgb": "frames/ep_000127/*.jpg",
-    "tactile": "tactile/ep_000127.npy",
-    "ft": "force_torque/ep_000127.csv"
-  },
-  "label": { "success": true, "time_to_insert_s": 3.42 }
-}</code></pre>
-        </div>
+      <div class="card pad">
+        <div class="protoRow" id="protocolRow">
+          <!-- LEFT: viewer frame -->
+          <div class="frame mvWrap protoViewer">
+            <div class="mvCap">Interactive</div>
 
-        <div class="sample col-6">
-          <div class="head">
-            <div><b>Sample B</b> <span class="muted">• contact event</span></div>
-            <span class="tag">CSV</span>
-          </div>
-          <pre><code>t, fx, fy, fz, tx, ty, tz, contact
-0.000, 0.1, -0.0, 0.2, 0.00, 0.01, 0.00, 0
-0.020, 0.2, -0.1, 0.6, 0.02, 0.03, 0.01, 1
-0.040, 0.4, -0.2, 1.4, 0.05, 0.05, 0.02, 1
-0.060, 0.3, -0.1, 0.9, 0.03, 0.04, 0.01, 1</code></pre>
-        </div>
-
-        <div class="card pad col-12">
-          <div class="section-head" style="margin-top:0;">
-            <h2>Dataset notes</h2>
-            <p>What reviewers look for</p>
-          </div>
-          <ul class="small" style="margin:0; padding-left: 18px;">
-            <li><b>Collection:</b> <span class="muted">[setup, number of sessions, operators, environments]</span></li>
-            <li><b>Modalities:</b> <span class="muted">[RGB, depth, tactile, force/torque, proprioception]</span></li>
-            <li><b>Splits:</b> <span class="muted">[train/val/test protocol + held-out objects/domains]</span></li>
-            <li><b>Licensing:</b> <span class="muted">[e.g., CC-BY 4.0 / custom research license]</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- HARDWARE -->
-    <section id="hardware">
-      <div class="section-head">
-        <h2>Hardware</h2>
-        <p>Reproducibility at a glance</p>
-      </div>
-
-      <div class="grid">
-        <div class="card pad col-7">
-          <table aria-label="Hardware table">
-            <thead>
-              <tr>
-                <th>Component</th>
-                <th>Spec</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><b>Robot</b></td>
-                <td class="muted">[e.g., Franka Panda / UR5e]</td>
-                <td class="muted">[control rate, end-effector]</td>
-              </tr>
-              <tr>
-                <td><b>Tactile sensor</b></td>
-                <td class="muted">[e.g., GelSight / DIGIT / custom]</td>
-                <td class="muted">[fps, resolution, mounting]</td>
-              </tr>
-              <tr>
-                <td><b>Compute</b></td>
-                <td class="muted">[GPU / CPU / RAM]</td>
-                <td class="muted">[training time, inference latency]</td>
-              </tr>
-              <tr>
-                <td><b>Cameras</b></td>
-                <td class="muted">[model, resolution, fps]</td>
-                <td class="muted">[calibration method]</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card pad col-5">
-          <div class="section-head" style="margin-top:0;">
-            <h2>Build checklist</h2>
-            <p>Make it easy to replicate</p>
-          </div>
-          <ul class="small" style="margin:0; padding-left: 18px;">
-            <li>Bill of materials + links</li>
-            <li>Mount + calibration steps</li>
-            <li>Sensor sync + timestamping</li>
-            <li>Safety + limits (force/torque)</li>
-            <li>Docker/conda environment</li>
-          </ul>
-
-          <div class="video-controls" style="margin-top: 14px;">
-            <a class="btn" href="#" onclick="alert('Replace with your BOM link'); return false;">🧾 BOM</a>
-            <a class="btn" href="#" onclick="alert('Replace with your calibration guide link'); return false;">🛠 Calibration</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESULTS -->
-    <section id="results">
-      <div class="section-head">
-        <h2>Experiment results</h2>
-        <p>Numbers + a small visual</p>
-      </div>
-
-      <div class="grid">
-        <div class="card pad col-6">
-          <div class="section-head" style="margin-top:0;">
-            <h2>Headline metrics</h2>
-            <p>Replace with your real scores</p>
-          </div>
-
-          <div class="metrics">
-            <div class="metric">
-              <div class="name">Success rate</div>
-              <div class="val">86.2%</div>
-              <div class="delta ok">+8.4 vs baseline</div>
+            <div class="protoMedia">
+              <model-viewer
+                src="assets/models/hand_origin.glb"
+                alt="Hand mesh visualizer"
+                camera-controls
+                touch-action="pan-y"
+                exposure="1.0"
+                shadow-intensity="1"
+                environment-image="neutral"
+                camera-target="0m 0m 0m"
+                auto-rotate
+                auto-rotate-delay="3000">
+              </model-viewer>
             </div>
-            <div class="metric">
-              <div class="name">Time-to-success</div>
-              <div class="val">3.4s</div>
-              <div class="delta warn">-0.6s median</div>
+
+            <div class="cap"><span>Full-hand Touch Spatial Layout</span></div>
+          </div>
+
+          <!-- RIGHT: pipeline frame -->
+          <div class="frame protoPipe" id="pipelineBox">
+            <div class="protoMedia">
+              <img id="pipelineImg" src="assets/figs/annotation_pipeline.png" alt="Annotation pipeline figure" />
             </div>
-            <div class="metric">
-              <div class="name">Failure rate (hard)</div>
-              <div class="val">9.1%</div>
-              <div class="delta ok">-4.7 abs</div>
+            <div class="cap"><span>Annotation pipeline</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYSIS: tactile map & taxonomy -->
+  <section id="analysis_tax">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Tactile Map & Grasp Taxonomy</h2>
+      </div>
+      <p class="mini" style="font-size:18px; line-height:1.7;">
+        We visualize accumulated tactile maps across dataset for different grasp types (defined by grasp taxonomy).
+        The spatial pressure patterns strongly correlate with the underlying grasp configuration,
+        demonstrating the accuracy and quality of our tactile data and grasp type annotation.
+      </p>
+      <div class="card pad">
+        <div class="frame auto">
+          <img src="assets/figs/tactile_taxonomy.png" alt="Tactile map and taxonomy figure" />
+        </div>
+      </div>
+      <div style="height:12px"></div>
+    </div>
+  </section>
+
+  <!-- ANALYSIS: statistics -->
+  <section id="analysis_stats">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Annotation Statistics</h2>
+      </div>
+      <p class="mini" style="font-size:18px; line-height:1.7;">
+        Sankey diagram visualizing the distribution of dataset labels, including environment, action, grasp type, and object category.
+        In total, OpenTouch contains objects across 14 everyday environments, covering over 8,000 objects from 14 categories.
+      </p>
+      <div class="card pad">
+        <div class="frame auto">
+          <img src="assets/figs/stats_sankey.png" alt="Sankey diagram + stats figure" />
+        </div>
+      </div>
+      <div style="height:12px"></div>
+    </div>
+  </section>
+
+  <!-- EGO4D -->
+  <section id="ego4d">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Tactile retrieval in-the-wild (Ego4D)</h2>
+        <p>1 video</p>
+      </div>
+
+      <div class="card pad">
+        <div class="frame auto">
+          <video autoplay muted loop playsinline preload="auto" controls poster="assets/posters/ego4d.jpg">
+            <source src="assets/videos/ego4d.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="cap"><span>assets/videos/ego4d.mp4</span><span>Looped demo</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENCHMARKS -->
+  <section id="bench">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>OpenTouch benchmark</h2>
+        <p>Retrieval + classification</p>
+      </div>
+
+      <div class="card pad">
+        <div class="secHead" style="margin-top:0;">
+          <h2>Retrieval benchmark <span class="badge">two videos + two tables</span></h2>
+        </div>
+
+        <div class="benchGrid">
+          <!-- LEFT: two videos stacked -->
+          <div class="benchLeft">
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/posters/retrieval_t2v.jpg">
+                <source src="assets/videos/retrieval_tactile_to_video.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>tactile → video</span><span>assets/videos/retrieval_tactile_to_video.mp4</span></div>
+            </div>
+
+            <div class="frame">
+              <video autoplay muted loop playsinline preload="metadata" controls poster="assets/posters/retrieval_v2t.jpg">
+                <source src="assets/videos/retrieval_video_to_tactile.mp4" type="video/mp4" />
+              </video>
+              <div class="cap"><span>video → tactile</span><span>assets/videos/retrieval_video_to_tactile.mp4</span></div>
             </div>
           </div>
 
-          <p class="hint">Keep metrics consistent with your paper’s table (same splits, same units).</p>
-        </div>
-
-        <div class="card pad col-6">
-          <div class="section-head" style="margin-top:0;">
-            <h2>Benchmark comparison</h2>
-            <p>Animated bars</p>
-          </div>
-
-          <ul class="barlist" id="barlist">
-            <li class="barrow" data-val="0.862">
-              <div class="label">OpenTouch</div>
-              <div class="bar"><i></i></div>
-              <div class="num">0.862</div>
-            </li>
-            <li class="barrow" data-val="0.778">
-              <div class="label">Baseline A</div>
-              <div class="bar"><i></i></div>
-              <div class="num">0.778</div>
-            </li>
-            <li class="barrow" data-val="0.742">
-              <div class="label">Baseline B</div>
-              <div class="bar"><i></i></div>
-              <div class="num">0.742</div>
-            </li>
-            <li class="barrow" data-val="0.615">
-              <div class="label">No tactile</div>
-              <div class="bar"><i></i></div>
-              <div class="num">0.615</div>
-            </li>
-          </ul>
-
-          <p class="hint">Swap these for your actual results. The bars will auto-scale to the max.</p>
-        </div>
-
-        <div class="card pad col-12">
-          <div class="section-head" style="margin-top:0;">
-            <h2>Ablations & notes</h2>
-            <p>2–5 bullet insights</p>
-          </div>
-          <ul class="small" style="margin:0; padding-left: 18px;">
-            <li><b>Ablation:</b> <span class="muted">Removing tactile token reduces success by X% on occluded objects.</span></li>
-            <li><b>Generalization:</b> <span class="muted">Held-out materials show stable performance with minimal tuning.</span></li>
-            <li><b>Failure modes:</b> <span class="muted">Most failures occur under [condition]; see Demo for examples.</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- CITATION + CONTACT -->
-    <section id="cite">
-      <div class="section-head">
-        <h2>Citation & contact</h2>
-        <p>Make it easy to cite you</p>
-      </div>
-
-      <div class="grid">
-        <div class="cite col-8">
-          <b>How to cite</b>
-          <p class="small" style="margin-top:6px;">
-            Replace the BibTeX below with your real citation.
-          </p>
-          <pre><code>@inproceedings{opentouch2026,
-  title     = {OpenTouch: Touch-aware Research with Crisp Demos},
-  author    = {Your Name and Collaborators},
-  booktitle = {Conference Name},
-  year      = {2026},
-  url       = {https://YOURNAME.github.io/opentouch/}
-}</code></pre>
-
-          <b>References</b>
-          <ol class="small">
-            <li>Author et al. “Related Work A.” <span class="muted">Venue, Year.</span></li>
-            <li>Author et al. “Related Work B.” <span class="muted">Venue, Year.</span></li>
-          </ol>
-        </div>
-
-        <div class="cite col-4">
-          <b>Contact</b>
-          <p class="small" style="margin-top:8px;">
-            <b>Your Name</b><br/>
-            Lab / University / Company<br/>
-            Email: <a class="underline" href="mailto:you@example.com">you@example.com</a><br/>
-            GitHub: <a class="underline" href="https://github.com/YOURNAME" target="_blank" rel="noreferrer">@YOURNAME</a>
-          </p>
-
-          <b>Media kit</b>
-          <p class="small" style="margin-top:6px;">
-            Add: teaser image, logo, short video, and a 2–3 sentence summary.
-          </p>
-        </div>
-      </div>
-
-      <footer>
-        <div class="footgrid">
+          <!-- RIGHT: two tables -->
           <div>
-            <b style="color: rgba(255,255,255,0.84);">OpenTouch</b>
-            <div class="small" style="margin-top:6px;">
-              Built as a single static page. Host it on GitHub Pages.
+            <div class="secHead" style="margin:0 0 10px;">
+              <h2>Bi-modal (Ours only)</h2><p>R@1 / R@5 / R@10 / mAP</p>
             </div>
-          </div>
-          <div class="small" style="text-align:right;">
-            <span class="muted">Last updated:</span> <span id="lastUpdated"></span>
+
+                <table aria-label="Bi-modal ours-only">
+                <thead>
+                    <tr><th>Direction</th><th>R@1</th><th>R@5</th><th>R@10</th><th>mAP</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>video → tactile</td><td>7.15</td><td>26.73</td><td>39.74</td><td>15.47</td></tr>
+                    <tr><td>tactile → video</td><td>7.15</td><td>26.30</td><td>39.03</td><td>15.28</td></tr>
+
+                    <tr><td>pose → tactile</td><td>6.93</td><td>21.02</td><td>30.45</td><td>13.13</td></tr>
+                    <tr><td>tactile → pose</td><td>7.15</td><td>21.87</td><td>30.88</td><td>13.43</td></tr>
+                </tbody>
+                </table>
+
+            <div style="height:12px"></div>
+
+            <div class="secHead" style="margin:0 0 10px;">
+              <h2>Tri-modal (Ours only)</h2><p>R@1 / R@5 / R@10 / mAP</p>
+            </div>
+
+            <table aria-label="Tri-modal ours-only">
+              <thead>
+                <tr><th>Direction</th><th>R@1</th><th>R@5</th><th>R@10</th><th>mAP</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>video + pose → tactile</td><td>14.08</td><td>42.96</td><td>62.26</td><td>26.86</td></tr>
+                <tr><td>tactile + pose → video</td><td>12.72</td><td>38.53</td><td>53.18</td><td>23.46</td></tr>
+                <tr><td>video + tactile → pose</td><td>15.44</td><td>43.39</td><td>57.61</td><td>26.86</td></tr>
+              </tbody>
+            </table>
+
+            <ul class="findings">
+              <li><b>Finding 1:</b> Bi-Modal retrieval. The symmetry across both directions suggests that learned representation is genuinely multimodal rather than biased toward a single modality.</li>
+              <li><b>Finding 2:</b> Multi-modal outperform unimodal. Multimodal inputs offer complementary information that reduces retrieval ambiguity, as video provides global scene context, pose encodes kinematics, and tactile captures local contact and force.</li>
+            </ul>
           </div>
         </div>
-      </footer>
-    </section>
-  </main>
+      </div>
 
-  <script>
-    // Smooth anchor scroll
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const id = a.getAttribute('href');
-        if (!id || id === "#") return;
-        const el = document.querySelector(id);
-        if (!el) return;
-        e.preventDefault();
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.pushState(null, "", id);
-      });
+      <div style="height:12px"></div>
+
+      <div class="card pad">
+        <div class="secHead" style="margin-top:0;">
+          <h2>Classification benchmark</h2>
+          <p>Table from the main paper</p>
+        </div>
+
+        <table aria-label="Classification table">
+          <thead>
+            <tr>
+              <th>Modality</th>
+              <th>Action Acc. (RN18)</th>
+              <th>Action Acc. (Lite-CNN)</th>
+              <th>Grasp Acc. (RN18)</th>
+              <th>Grasp Acc. (Lite-CNN)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>V</td><td>40.26</td><td>—</td><td>57.45</td><td>—</td></tr>
+            <tr><td>P</td><td>33.22</td><td>—</td><td>46.32</td><td>—</td></tr>
+            <tr><td>T</td><td>29.95</td><td>31.59</td><td>60.23</td><td>57.12</td></tr>
+            <tr><td>T + P</td><td>28.31</td><td>27.00</td><td>60.72</td><td>62.19</td></tr>
+            <tr><td>T + V</td><td>30.11</td><td>32.73</td><td>51.72</td><td>65.47</td></tr>
+            <tr><td>T + P + V</td><td>35.02</td><td>37.32</td><td>55.65</td><td>68.09</td></tr>
+          </tbody>
+        </table>
+
+        <ul class="findings">
+          <li><b>Finding 1:</b> Tactile is highly informative for grasp type, reflecting that grasp relies on local contact geometry.</li>
+          <li><b>Finding 2:</b> Actions recognition depend on higher-level global context provided by video modality.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CITATION -->
+  <section id="cite">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Citation</h2>
+        <p>BibTeX</p>
+      </div>
+
+      <div class="card pad">
+        <pre id="bibtex">@misc{song2025opentouchbringingfullhandtouch,
+      title={OPENTOUCH: Bringing Full-Hand Touch to Real-World Interaction},
+      author={Yuxin Ray Song and Jinzhou Li and Rao Fu and Devin Murphy and Kaichen Zhou and Rishi Shiv and Yaqi Li and Haoyu Xiong and Crystal Elaine Owens and Yilun Du and Yiyue Luo and Xianyi Cheng and Antonio Torralba and Wojciech Matusik and Paul Pu Liang},
+      year={2025},
+      eprint={2512.16842},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2512.16842},
+}</pre>
+
+        <div class="rowEnd">
+          <div class="mini" id="copyHint">Click to copy BibTeX.</div>
+          <button class="copy" id="copyBtn">Copy BibTeX</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACKNOWLEDGMENT -->
+  <section id="ack">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Acknowledgment</h2>
+        <p></p>
+      </div>
+
+      <div class="card pad">
+        <p style="margin:0; color:var(--muted); font-size:12px; line-height:1.75;">
+          We thank the MIT Office of Research Computing and Data (ORCD) for support through ORCD Seed Fund Grants,
+          which provided access to 8&times;H200 GPUs and additional funding support. We also thank the NVIDIA
+          Academic Grant Program for GPU support, Murata, and Analog Devices for supporting this work through the
+          MIT Gen AI Impact Consortium. Any opinion, findings, and conclusions or recommendations expressed in this
+          material are those of the authors and do not necessarily reflect the views of NVIDIA, Murata, and Analog Devices.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="secHead">
+        <h2>Like & Contact</h2>
+        <p>Say hi / request access / collaborations</p>
+      </div>
+
+      <div class="card pad">
+        <div class="rowEnd">
+          <div style="color:var(--muted);line-height:1.6;">
+            <b style="color:rgba(255,255,255,.90)">Corresponding author:</b> Ray Song<br/>
+            Email: <a href="mailto:rayxsong@mit.edu">rayxsong@mit.edu</a><br/>
+            GitHub: <a href="https://github.com/opentouch-tactile">opentouch-tactile</a>
+          </div>
+          <a class="btn" href="mailto:rayxsong@mit.edu?subject=OpenTouch%20Project%20Page">✉️ Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div> Webpage developed by Rao Fu <a href="mailto:rao_fu@brown.edu">rao_fu@brown.edu</a>.</div>
+    </div>
+  </footer>
+</main>
+
+<script>
+  // Smooth scroll for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.pushState(null, "", id);
     });
+  });
 
-    // Video controls (autoplay is already set; these help users unlock audio)
-    const v = document.getElementById('demoVideo');
-    const toggleMute = document.getElementById('toggleMute');
-    const togglePlay = document.getElementById('togglePlay');
-    const restart = document.getElementById('restart');
-    const openFullscreen = document.getElementById('openFullscreen');
+  // Pause autoplay videos when offscreen (saves CPU)
+  const vids = [...document.querySelectorAll('video')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const v = e.target;
+      const isAuto = v.hasAttribute('autoplay');
+      if (!isAuto) return;
+      if (e.isIntersecting) v.play().catch(()=>{});
+      else v.pause();
+    });
+  }, { threshold: 0.15 });
+  vids.forEach(v => io.observe(v));
 
-    function syncButtons(){
-      toggleMute.textContent = v.muted ? "🔈 Unmute" : "🔇 Mute";
-      togglePlay.textContent = v.paused ? "▶ Play" : "⏸ Pause";
+  // Copy BibTeX
+  const copyBtn = document.getElementById('copyBtn');
+  const bibtex = document.getElementById('bibtex');
+  const copyHint = document.getElementById('copyHint');
+  copyBtn?.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(bibtex.innerText);
+      copyHint.textContent = "Copied!";
+      setTimeout(()=> copyHint.textContent = "Click to copy BibTeX.", 1200);
+    }catch{
+      copyHint.textContent = "Copy failed. Select the text manually.";
+    }
+  });
+
+  // Protocol sizing:
+  // viewer is HxH, pipeline media is H x (H*aspectPNG), and (H + gap + H*aspectPNG) = containerWidth
+  (function(){
+    const row = document.getElementById('protocolRow');
+    const img = document.getElementById('pipelineImg');
+    if (!row || !img) return;
+
+    const GAP_PX = 12; // must match CSS gap
+
+    function computeAndSet(){
+      if (window.matchMedia('(max-width: 980px)').matches) return;
+
+      const w = row.clientWidth;
+      const aspect = (img.naturalWidth && img.naturalHeight) ? (img.naturalWidth / img.naturalHeight) : 2.0;
+
+      const H = (w - GAP_PX) / (1 + aspect);
+
+      row.style.setProperty('--pipeAspect', String(aspect));
+      row.style.setProperty('--protoH', `${H}px`);
     }
 
-    toggleMute.addEventListener('click', async () => {
-      v.muted = !v.muted;
-      // If user unmutes, try to play (some browsers pause when toggling audio)
-      try { await v.play(); } catch {}
-      syncButtons();
+    if (img.complete) computeAndSet();
+    else img.addEventListener('load', computeAndSet, { once:true });
+
+    let raf = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(computeAndSet);
     });
-
-    togglePlay.addEventListener('click', async () => {
-      try {
-        if (v.paused) await v.play();
-        else v.pause();
-      } catch {}
-      syncButtons();
-    });
-
-    restart.addEventListener('click', async () => {
-      v.currentTime = 0;
-      try { await v.play(); } catch {}
-      syncButtons();
-    });
-
-    openFullscreen.addEventListener('click', async () => {
-      const el = v;
-      if (el.requestFullscreen) el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    });
-
-    v.addEventListener('play', syncButtons);
-    v.addEventListener('pause', syncButtons);
-    syncButtons();
-
-    // Animated bars scaled to max value
-    function animateBars(){
-      const rows = [...document.querySelectorAll('#barlist .barrow')];
-      const vals = rows.map(r => parseFloat(r.dataset.val || "0"));
-      const max = Math.max(...vals, 1e-6);
-      rows.forEach((r, idx) => {
-        const val = vals[idx];
-        const pct = Math.max(0, Math.min(1, val / max)) * 100;
-        const fill = r.querySelector('.bar > i');
-        // slight stagger
-        setTimeout(() => { fill.style.width = pct.toFixed(1) + "%"; }, 120 + idx * 80);
-      });
-    }
-    // Run once when visible
-    const results = document.getElementById('results');
-    const obs = new IntersectionObserver((entries) => {
-      if (entries.some(e => e.isIntersecting)) {
-        animateBars();
-        obs.disconnect();
-      }
-    }, { threshold: 0.25 });
-    obs.observe(results);
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
-      if (e.key.toLowerCase() === "k") document.getElementById('demo').scrollIntoView({behavior:"smooth"});
-      if (e.key.toLowerCase() === "r") document.getElementById('results').scrollIntoView({behavior:"smooth"});
-    });
-
-    // Last updated
-    const d = new Date();
-    document.getElementById('lastUpdated').textContent =
-      d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
-  </script>
+  })();
+</script>
 </body>
 </html>
