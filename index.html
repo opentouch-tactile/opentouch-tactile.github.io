@@ -405,6 +405,22 @@
       border:1px solid rgba(255,255,255,.14);
       background: rgba(0,0,0,.20);
     }
+  
+    /* In-the-wild: 3 videos stacked vertically, full width */
+    .itwCol{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .itwCol .frame video{
+      width:100%;
+      height:auto;            /* keep original aspect */
+      display:block;
+      object-fit: contain;
+      background: rgba(0,0,0,.25);
+    }
+
+
   </style>
 </head>
 
@@ -679,24 +695,43 @@
     </div>
   </section>
 
-  <!-- EGO4D -->
   <section id="ego4d">
     <div class="wrap">
       <div class="secHead">
         <h2>Tactile retrieval in-the-wild (Ego4D)</h2>
-        <p>1 video</p>
       </div>
-
-      <div class="card pad">
+      <p class="mini" style="font-size:18px; line-height:1.7;">
+       OPENTOUCH can act as a tactile database for in-the-wild egocentric video datasets: we demonstrate that in-the-wild video (e.g., Ego4D) can retrieve plausible tactile sequences, enabling large-scale egocentric video to be augmented with contact and force cues.
+       The source videos paired with the retrieved tactile exhibit human behaviors and manipulation primitives strikingly similar to the query.
+      </p>
+    <div class="card pad">
+      <div class="itwCol">
         <div class="frame auto">
-          <video autoplay muted loop playsinline preload="auto" controls poster="assets/posters/ego4d.jpg">
-            <source src="assets/videos/ego4d.mp4" type="video/mp4" />
+          <video autoplay muted loop playsinline preload="metadata" controls>
+            <source src="assets/videos/opentouch-itw-01.mp4" type="video/mp4" />
           </video>
+          <div class="cap"><span>In-the-wild #1</span><span>opentouch-itw-01.mp4</span></div>
         </div>
-        <div class="cap"><span>assets/videos/ego4d.mp4</span><span>Looped demo</span></div>
+
+        <div class="frame auto">
+          <video autoplay muted loop playsinline preload="metadata" controls>
+            <source src="assets/videos/opentouch-itw-02.mp4" type="video/mp4" />
+          </video>
+          <div class="cap"><span>In-the-wild #2</span><span>opentouch-itw-02.mp4</span></div>
+        </div>
+
+        <div class="frame auto">
+          <video autoplay muted loop playsinline preload="metadata" controls>
+            <source src="assets/videos/opentouch-itw-03.mp4" type="video/mp4" />
+          </video>
+          <div class="cap"><span>In-the-wild #3</span><span>opentouch-itw-03.mp4</span></div>
+        </div>
       </div>
     </div>
+
+    </div>
   </section>
+
 
   <!-- BENCHMARKS -->
   <section id="bench">
